@@ -44,7 +44,7 @@ jobs:
         run: python3 -m pip install xml2rfc
       
       - name: build the page
-      - run: mkdir -p build && xml2rfc draft-yusef-oauth-nested-jwt-*.xml --html -o build/index.html
+        run: mkdir -p build && xml2rfc draft-yusef-oauth-nested-jwt-*.xml --html -o build/index.html
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
