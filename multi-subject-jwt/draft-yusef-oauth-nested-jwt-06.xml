@@ -47,9 +47,9 @@
     <workgroup>OAuth Working Group</workgroup>
     <abstract>
       <t>
-   This specification defines a mechanism for including multiple subjects in a JWT. 
-   A primary subject in an enclosing JWT with its own claims, and a related secondary
-   subject in a nested JWT with its own claims. 
+       	This specification defines a mechanism for embedding tokens or claims into a JWT token. 
+	The embedded tokens or claims could be either from one source or multiple sources, associated 
+	with either one subject or multiple related subjects.
       </t>
     </abstract>
   </front>
@@ -57,41 +57,34 @@
   <middle>
     <section anchor="sect-1" numbered="true" toc="default">
       <name>Introduction</name>
-      <t>
-   JSON Web Token (JWT) <xref target="RFC7519" format="default"/> is a mechanism that is used to
-   transfer claims between two parties across security domains.  Nested
-   JWT is a JWT in which the payload is another JWT.  The current
-   specification does not define a means by which the enclosing JWT
-   could have its own Claims Set, only the enclosed JWT would have
-   claims.
-      </t>
-      <t>
-   There are a number of use cases where there is a need to represent multiple related subjects in one JWT; 
-   a primary subject and a related secondary subject.
-      </t>
-      <t>
-    This specification defines a mechanism for including multiple subjects in a JWT. 
-   A primary subject in an enclosing JWT with its own claims, and a related secondary
-   subject in a nested JWT with its own claims. 
-      </t>
-
-    <t>
-    Such a mechanism allows for a proper auditing trail that allows the resource server to identify who 
-    accessed what resource and on behalf of whom. In some cases, this allows the service consuming such 
-    a token to present some of the information contained in the nested JWT to the end user in real-time.
-    In adittion, in some cases, this allows the resource server to apply authorization policies based on who 
-    requested the access to the resource and on behalf of whom is the request. 
-    </t>
-
-  
-
+      	<t>
+	JWT is a mechanism that is used to transfer claims between two parties across security domains. 
+	There are a number of use cases that need to embed tokens or claims into another JWT token 
+	associated with one or multiple subjects.
+      	</t>
+      	<t>
+	This specification defines a mechanism for embedding tokens or claims into a JWT token. 
+	The embedded tokens or claims could be either from one source or different sources, associated 
+	with either one subject or multiple related subjects.
+      	</t>
+    	<t>
+	Such a mechanism allows for a proper auditing trail that allows the Resource Server to identify who 
+	accessed what resource and on behalf of whom. In some cases, this allows the service consuming 
+	such a token to present some of the information contained in the nested token or claims to the 
+	end user in real-time. In addition, in some cases, this allows the Resource Server to apply 
+	authorization policies based on who requested the access to the resource and on behalf of whom 
+	is the request.
+    	</t>
+	    
       <section anchor="sect-1.1" numbered="true" toc="default">
         <name>Terminology</name>
         <t>
-   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-   document are to be interpreted as described in <xref target="RFC8174" format="default"/>.</t>
+   	The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   	"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   	document are to be interpreted as described in <xref target="RFC8174" format="default"/>.</t>
       </section>
+	    
+	    
     </section>
     <section anchor="use-cases" numbered="true" toc="default">
       <name>Use Cases</name>
@@ -211,35 +204,36 @@
 <section anchor="one-issuer-flow" numbered="true" toc="default">
     <name>One Issuer Flow</name>
     <t>
-    In this case, one issuer is expected to issue multiple tokens to a user based on either some configuration 
-    or some interaction with the involved subjects.
+	In this case, one Issuer is expected to issue either multiple Tokens or multiple claim 
+	payloads to a user based on either some configuration or some interaction with the involved subjects.
     </t>
     <t>
-    In a typical flow in this case, the secondary subject initiates the interaction with the AS, authenticates, 
-    and requests access to resources that belong to the primary subject. In some cases, e.g., child/parent, husband/wife, 
-    the consent might be configured on the AS, and no interactive action is required by the primary subject. 
-    In other cases, e.g., employee/admin, after the secondary subject has authenticated and requested access to the 
-    resources of the secondary subject, an action might be required by the primary subject to approve the access request 
-    by the secondary subject. In either case, the details of these interactions are out of scope of this document.
+	In a typical flow in this case, the Secondary Subject initiates the interaction with the AS, 
+	authenticates, and requests access to resources that belong to the Primary Subject. 
+	In some cases, e.g., child/parent, husband/wife, the consent might be configured on 
+	the AS, and no interactive action is required by the primary subject. In other cases, 
+	e.g., employee/admin, after the Secondary Subject has authenticated and requested access 
+	to the resources of the Secondary Subject, an action might be required by the Primary 
+	Subject to approve the access request by the Secondary Subject. In either case, the 
+	details of these interactions are out of scope of this document.
     </t>
-
     </section>
 
 
     <section anchor="multiple-issuers-flow" numbered="true" toc="default">
       <name>Multiple Issuers Flow</name>
     <t>
-    In this case, one issuer issues a token that is then used by one client to interact with a second issuer, 
-    provide the first token to the second issuer, and request a new token that includes the first token as an 
-    embedded token in the new token.
+	In this case, one issuer issues a token that is then used by one client to interact with 
+	a second issuer, provide the first token to the second issuer, and request a new 
+	token that includes the first token as an embedded token in the new token.
     </t>
     <t>
-    In a typical flow in this case, one client requests a token from one issuer with some permissions. 
-    The client then sends that token to a second issuer, which validates the token, and needs to 
-    transform or add additional permissions to the first token, but it cannot change the first token. 
-    The authorization server then issues a new token that either transforms the initial token or adds 
-    more permissions to the new token to extend the permissions in the initial token, and embeds the 
-    initial token into this new token.
+	In a typical flow in this case, one client requests a token from one issuer with some permissions. 
+	The client then sends that token to a second issuer, which validates the token, and needs to 
+	transform or add additional permissions to the first token, but it cannot change the first token. 
+	The authorization server then issues a new token that either transforms the initial token or adds 
+	more permissions to the new token to extend the permissions in the initial token, and embeds the 
+	initial token into this new token.
     </t>
 
     </section>
