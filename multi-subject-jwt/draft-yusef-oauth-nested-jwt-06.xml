@@ -238,6 +238,21 @@
 
     </section>
 
+    <section anchor="authz-request" numbered="true" toc="default">
+      <name>Authorization Request</name>
+      <t>
+        This document defines how an AS differentiates between an authorization request from a primary 
+        subject and a secondary subject, using the following parameters:
+      </t>
+
+      <artwork name="" type="" align="left" alt=""><![CDATA[
+primary_subject - this indicates to the AS that the user sending this request is not 
+                  the primary user of this authorization request, and instead the value 
+                  of this parameter is the subject of this authorization request.
+      ]]></artwork>
+
+    </section>
+
 
     <section anchor="token-issuance" numbered="true" toc="default">
       <name>Token Issuance Request</name>
