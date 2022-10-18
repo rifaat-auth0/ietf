@@ -82,6 +82,21 @@
    	The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    	"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
    	document are to be interpreted as described in <xref target="RFC8174" format="default"/>.</t>
+
+        <section anchor="definitions" numbered="true" toc="default">
+        <name>Definitions</name>
+
+      <artwork name="" type="" align="left" alt=""><![CDATA[
+Primary Subject - the main subject of the token.
+Secondary Subject - the subject that is acting on behalf of the primary subject.
+Resource Server (RS) - as defined in [RFC6749].
+Authorization Server (AS)  - as defined in [RFC6749].
+Issuer - is the AS that issues the token.
+Token - a mechanism to transfer claims between two parties across a security domain.
+
+      ]]></artwork>
+      </section>
+
       </section>
 	    
 	    
@@ -89,7 +104,7 @@
     <section anchor="use-cases" numbered="true" toc="default">
       <name>Use Cases</name>
       <t>
-   The following are few use cases that might benefit from such a concept, that fall into two different categories:
+        The following are few use cases that might benefit from such a concept, that fall into two different categories:
       </t>
       <section anchor="one-issuer" numbered="true" toc="default">
         <name>One Issuer Category</name>
@@ -238,6 +253,10 @@
 
     </section>
 
+
+    <section anchor="one-issuer-authz-request" numbered="true" toc="default">
+      <name>One Issuer Request and Response</name>
+
     <section anchor="authz-request" numbered="true" toc="default">
       <name>Authorization Request</name>
       <t>
@@ -253,15 +272,74 @@ primary_subject - this indicates to the AS that the user sending this request is
 
     </section>
 
-
-    <section anchor="token-issuance" numbered="true" toc="default">
-      <name>Token Issuance Request</name>
+    <section anchor="authz-response" numbered="true" toc="default">
+      <name>Authorization Response</name>
       <t>
-   When a client receives a token, and it needs to transform or/and enhance the permissions of the token, the client will send an token request to the AS, and include the received token to be embedded in the newly issued token that contains the transformed token details or permissions.
-
+      If an authorization code is returned, then the response is the same as a standard authorization response. 
+      The authorization code will be used by the client to obtain the tokens. Otherwise, tokens will be returned 
+      in this response, per the existing standard flows.
       </t>
       <t>
-NOTE: I guess we need to define a new grant type for this, e.g. urn:ietf:params:oauth:grant-type:embedded-token?
+      Regardless of the way the token was obtained, the claims in the token will be associated with the primary_subject, 
+      with the claims associated with the secondary subject being embedded in the same token.
+      </t>
+    </section>
+
+    <section anchor="authz-error-response" numbered="true" toc="default">
+      <name>Error Response</name>
+      <t>
+      If the secondary subject is not authorized to request a token on behalf of the primary subject, 
+      then an error code will be returned to indicate that. In this case, the authorization server MUST 
+      construct an error response, as specified in section 5.2 of RFC6749. The value of the error parameter 
+      MUST be invalid_delegation error code.
+      </t>
+      <t>
+      The authorization server MAY include additional information regarding the reasons for the error 
+      using the error_description as discussed in Section 5.2 of [RFC6749].
+      </t>
+    </section>
+
+    </section>
+
+
+    <section anchor="mutiple-issuers-token-issuance" numbered="true" toc="default">
+      <name>Multiple Issuers Request and Response</name>
+
+    <section anchor="token-issuance-request" numbered="true" toc="default">
+      <name>Token Issuance Request</name>
+      <t>
+        When a client receives a token, and it needs to transform or/and enhance the permissions of the token, 
+        the client will send a token request to the AS, and include the received token to be embedded in the newly 
+        issued token that contains the transformed token details or permissions.
+      </t>
+      <t>
+        The Client requests a token by sending an authorization request to the authorization server’s token endpoint 
+        using the extension grant mechanism defined in Section 5.4 of [RFC6749].
+      </t>
+
+      <t>
+      The client makes a token request to the token endpoint with an extension grant type using the HTTP POST method. 
+      </t>
+
+      <t>
+      The following parameters are included in the HTTP request entity-body using the application/x-www-form-urlencoded 
+      format with a character encoding of UTF-8 as described in Appendix B of [RFC6749].
+      </t>
+
+      <artwork name="" type="" align="left" alt=""><![CDATA[
+grant_type
+REQUIRED. The value urn:ietf:params:oauth:grant-type:embedded-token indicates that the 
+client is requesting that the authorization server embed a provided token in the newly 
+issued token.
+
+token
+REQUIRED. This parameter carries the token to be embedded into the newly issued token.
+
+      ]]></artwork>
+
+
+      <t>
+      The following is an example of this new token request:
       </t>
 
       <artwork name="" type="" align="left" alt=""><![CDATA[
@@ -273,6 +351,41 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-token
      &token=<token>
 
 ]]></artwork>
+    </section>
+
+
+      <section anchor="token-issuance-response" numbered="true" toc="default">
+      <name>Token Issuance Response</name>
+    
+      <t>
+      Before issuing the requested token, the authorization server MUST ensure that the request is 
+      valid and that the embedded token is coming from a trusted and approved entity
+      </t>
+
+      <t>
+      In the case that the authorization server validated and approved the request, the authorization server 
+      responds to the above request with the standard response from the token endpoint, as defined in section 
+      5 of [RFC6749], and includes the newly issued token with the requested embedded token.
+      </t>
+      </section>
+
+      <section anchor="token-issuance-error-response" numbered="true" toc="default">
+      <name>Token Issuance Error</name>
+    
+      <t>
+      If the authorization fails to validate the embedded token, then the authorization server MUST 
+      construct an error response, as specified in section 5.2 of RFC6749. The value of the error 
+      parameter MUST be invalid_embedded_token error code.
+      </t>
+
+      <t>
+      The authorization server MAY include additional information regarding the reasons for the error using 
+      the error_description as discussed in Section 5.2 of [RFC6749].
+      </t>
+      </section>
+
+
+
 
     </section>
 
