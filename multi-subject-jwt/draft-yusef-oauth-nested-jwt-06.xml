@@ -316,8 +316,8 @@ primary_subject - this indicates to the AS that the user sending this request is
         issued Token that contains the transformed Token details or permissions.
       </t>
       <t>
-        The Client requests a Token by sending an authorization request to the authorization server’s Token endpoint 
-        using the extension grant mechanism defined in Section 5.4 of [RFC6749].
+        The Client requests a Token by sending an authorization request to the AS’s Token endpoint 
+        using the extension grant mechanism defined in Section 4.5 of [RFC6749].
       </t>
 
       <t>
