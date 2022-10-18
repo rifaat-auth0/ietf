@@ -308,7 +308,7 @@ primary_subject - this indicates to the AS that the user sending this request is
     <section anchor="mutiple-issuers-token-issuance" numbered="true" toc="default">
       <name>Multiple Issuers Request and Response</name>
 
-    <section anchor="Token-issuance-request" numbered="true" toc="default">
+    <section anchor="token-issuance-request" numbered="true" toc="default">
       <name>Token Issuance Request</name>
       <t>
         When a client receives a Token, and it needs to transform or/and enhance the permissions of the Token, 
@@ -372,7 +372,7 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-token
       </t>
       </section>
 
-      <section anchor="Token-issuance-error-response" numbered="true" toc="default">
+      <section anchor="token-issuance-error-response" numbered="true" toc="default">
       <name>Token Issuance Error</name>
     
       <t>
@@ -408,7 +408,7 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-token
         <dt>rel:</dt>
         <dd>
       Defines the relationship between the enclosed JWT and the enclosing JWT. It can 
-      take one of the values defined in section <xref target="Token-relationship" format="default"/> </dd>
+      take one of the values defined in section <xref target="token-relationship" format="default"/> </dd>
       </dl>
       <dl newline="true" spacing="normal" indent="3">
         <dt>jwt:</dt>
@@ -416,7 +416,7 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-token
       Contains the enclosed JWT.</dd>
       </dl>
     </section>
-    <section anchor="Token-relationship" numbered="true" toc="default">
+    <section anchor="token-relationship" numbered="true" toc="default">
       <name>Token Relationship</name>
       <t>
    The following relathionship types are defined by this specification:
