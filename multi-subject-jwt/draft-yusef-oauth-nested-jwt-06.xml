@@ -106,7 +106,7 @@ Token - a mechanism to transfer claims between two parties across a security dom
       <t>
         The following are few use cases that might benefit from such a concept, that fall into two different categories:
       </t>
-      <section anchor="one-issuer" numbered="true" toc="default">
+      <section anchor="one-Issuer" numbered="true" toc="default">
         <name>One Issuer Category</name>
         <t>
    In the following cases, both JWTs are issued by the same Issuer.
@@ -145,7 +145,7 @@ Token - a mechanism to transfer claims between two parties across a security dom
           </t>
         </section>
       </section>
-      <section anchor="multiple-issuers" numbered="true" toc="default">
+      <section anchor="multiple-Issuers" numbered="true" toc="default">
         <name>Multiple Issuers Category</name>
         <t>
    In the following cases, the JWTs are issued by different Issuers.
@@ -219,7 +219,7 @@ Token - a mechanism to transfer claims between two parties across a security dom
       </section>
     </section>
 
-<section anchor="one-issuer-flow" numbered="true" toc="default">
+<section anchor="one-Issuer-flow" numbered="true" toc="default">
     <name>One Issuer Flow</name>
     <t>
 	In this case, one Issuer is expected to issue either multiple Tokens or multiple claim 
@@ -238,7 +238,7 @@ Token - a mechanism to transfer claims between two parties across a security dom
     </section>
 
 
-    <section anchor="multiple-issuers-flow" numbered="true" toc="default">
+    <section anchor="multiple-Issuers-flow" numbered="true" toc="default">
       <name>Multiple Issuers Flow</name>
     <t>
 	In this case, one Issuer issues a Token that is then used by one client to interact with 
@@ -257,7 +257,7 @@ Token - a mechanism to transfer claims between two parties across a security dom
     </section>
 
 
-    <section anchor="one-issuer-authz-request" numbered="true" toc="default">
+    <section anchor="one-Issuer-authz-request" numbered="true" toc="default">
       <name>One Issuer Request and Response</name>
 
     <section anchor="authz-request" numbered="true" toc="default">
@@ -305,7 +305,7 @@ primary_subject - this indicates to the AS that the user sending this request is
     </section>
 
 
-    <section anchor="mutiple-issuers-token-issuance" numbered="true" toc="default">
+    <section anchor="mutiple-Issuers-Token-issuance" numbered="true" toc="default">
       <name>Multiple Issuers Request and Response</name>
 
     <section anchor="Token-issuance-request" numbered="true" toc="default">
@@ -331,11 +331,11 @@ primary_subject - this indicates to the AS that the user sending this request is
 
       <artwork name="" type="" align="left" alt=""><![CDATA[
 grant_type
-REQUIRED. The value urn:ietf:params:oauth:grant-type:embedded-token indicates that the 
+REQUIRED. The value urn:ietf:params:oauth:grant-type:embedded-Token indicates that the 
 client is requesting that the authorization server embed a provided Token in the newly 
 issued Token.
 
-token
+Token
 REQUIRED. This parameter carries the Token to be embedded into the newly issued Token.
 
       ]]></artwork>
@@ -346,18 +346,18 @@ REQUIRED. This parameter carries the Token to be embedded into the newly issued 
       </t>
 
       <artwork name="" type="" align="left" alt=""><![CDATA[
-POST /token.oauth2 HTTP/1.1
+POST /Token.oauth2 HTTP/1.1
 Host: as.example.com
 Content-Type: application/x-www-form-urlencoded
 
-grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-token
-     &token=<Token>
+grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-Token
+     &Token=<Token>
 
 ]]></artwork>
     </section>
 
 
-      <section anchor="token-issuance-response" numbered="true" toc="default">
+      <section anchor="Token-issuance-response" numbered="true" toc="default">
       <name>Token Issuance Response</name>
     
       <t>
@@ -456,7 +456,7 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-token
      Indicates that the subject in the enclosed JWT is the original JWT that resulted in the primary subject JWT</dd>
         <dt/>
         <dd>
-      This URN could be used in all the use cases described in <xref target="multiple-issuers" format="default"/>.
+      This URN could be used in all the use cases described in <xref target="multiple-Issuers" format="default"/>.
       </dd>
       </dl>
     </section>
@@ -469,17 +469,16 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-token
       </t>
       <artwork name="" type="" align="left" alt=""><![CDATA[
 {
-  "alg": "ES256",
+  "alg": "HS256",
   "typ": "JWT",
 }
-.
 {
    "sub": "1234567890",
    "name": "John Doe",
    "iat": 1516239022,
    "rsub": {
-      "rel" :  "urn:ietf:params:oauth:subject-type:authority"
-      "jwt" : {
+      “rel” :  "urn:ietf:params:oauth:subject-type:authority"
+      “jwt” : {
          "sub": "9876543210",
          "name": "Alice Doe",
          "iat": 1516239022,
