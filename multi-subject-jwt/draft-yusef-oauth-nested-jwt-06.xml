@@ -206,13 +206,10 @@ Token - a mechanism to transfer claims between two parties across a security dom
   </t>
   <t>
   An Authorization Server issues a JWT Token that contains multiple Tokens. 
-  Each Token MAY have a specialized set of claims and values 
-  referred to the first Subject.
-  
-  The Tokens MAY be used by the Client to directly consume 
-  protected resources or obtain new Access Tokens, over different domains,
-  releasing the minimum possible number 
-  of information related on the main Subject and necessary for the operation. 
+  Each Token has a specialized set of attributes and values.
+  The Tokens can be used by the client to consume protected resources or to obtain access Tokens through 
+  a Token exchange mechanism, over different domains, releasing the minimum possible number 
+  of information, related on the main subject, necessary for the operation. 
   </t>
   </section>
 
@@ -248,9 +245,9 @@ Token - a mechanism to transfer claims between two parties across a security dom
     <t>
 	In a typical flow in this case, one client requests a Token from one Issuer with some permissions. 
 	The client then sends that Token to a second Issuer, which validates the Token, and needs to 
-	transform or add additional properties to the first Token, but it cannot change the first Token. 
-	The Authorization Server then issues a new Token that either transforms the initial Token or adds 
-	more properties to the new Token to extend the permissions in the initial Token, and embeds the 
+	transform or add additional permissions to the first Token, but it cannot change the first Token. 
+	The authorization server then issues a new Token that either transforms the initial Token or adds 
+	more permissions to the new Token to extend the permissions in the initial Token, and embeds the 
 	initial Token into this new Token.
     </t>
 
