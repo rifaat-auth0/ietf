@@ -205,11 +205,14 @@ Token - a mechanism to transfer claims between two parties across a security dom
      A JWT may embeds tokens for different audiences and scopes. 
   </t>
   <t>
-  An Authorization Server issues a JWT Token that contains multiple tokens. 
-  Each token has a specialized set of attributes and values.
-  The tokens can be used by the client to consume protected resources or to obtain access tokens through 
-  a token exchange mechanism, over different domains, releasing the minimum possible number 
-  of information, related on the main subject, necessary for the operation. 
+  An Authorization Server issues a JWT Token that contains multiple Tokens. 
+  Each Token MAY have a specialized set of claims and values 
+  referred to the first Subject.
+
+  The Tokens MAY be used by the Client to directly consume 
+  protected resources or obtain new Access Tokens, over different domains,
+  releasing the minimum possible number 
+  of information related on the main Subject and necessary for the operation. 
   </t>
   </section>
 
@@ -314,7 +317,7 @@ primary_subject - this indicates to the AS that the user sending this request is
       </t>
       <t>
         The Client requests a token by sending an authorization request to the authorization server’s token endpoint 
-        using the extension grant mechanism defined in Section 5.4 of [RFC6749].
+        using the extension grant mechanism defined in Section 4.5 of [RFC6749].
       </t>
 
       <t>
@@ -471,15 +474,11 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-token
 }
 {
    "sub": "1234567890",
-   "name": "John Doe",
+   "name": "Alice Doe",
    "iat": 1516239022,
    "rsub": {
-      “rel” :  "urn:ietf:params:oauth:subject-type:authority"
-      “jwt” : {
-         "sub": "9876543210",
-         "name": "Alice Doe",
-         "iat": 1516239022,
-      }
+      "rel" : "urn:ietf:params:oauth:subject-type:authority"
+      "jwt" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
    }
 }
 ]]></artwork>
