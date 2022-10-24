@@ -47,8 +47,8 @@
     <workgroup>OAuth Working Group</workgroup>
     <abstract>
       <t>
-       	This specification defines a mechanism for embedding Tokens or claims into a JWT Token. 
-	The embedded Tokens or claims could be either from one source or multiple sources, associated 
+       	This specification defines a mechanism for embedding tokens or claims into a JWT token. 
+	The embedded tokens or claims could be either from one source or multiple sources, associated 
 	with either one subject or multiple related subjects.
       </t>
     </abstract>
@@ -59,18 +59,18 @@
       <name>Introduction</name>
       	<t>
 	JWT is a mechanism that is used to transfer claims between two parties across security domains. 
-	There are a number of use cases that need to embed Tokens or claims into another JWT Token 
+	There are a number of use cases that need to embed tokens or claims into another JWT token 
 	associated with one or multiple subjects.
       	</t>
       	<t>
-	This specification defines a mechanism for embedding Tokens or claims into a JWT Token. 
-	The embedded Tokens or claims could be either from one source or different sources, associated 
+	This specification defines a mechanism for embedding tokens or claims into a JWT token. 
+	The embedded tokens or claims could be either from one source or different sources, associated 
 	with either one subject or multiple related subjects.
       	</t>
     	<t>
 	Such a mechanism allows for a proper auditing trail that allows the Resource Server to identify who 
 	accessed what resource and on behalf of whom. In some cases, this allows the service consuming 
-	such a Token to present some of the information contained in the nested Token or claims to the 
+	such a token to present some of the information contained in the nested token or claims to the 
 	end user in real-time. In addition, in some cases, this allows the Resource Server to apply 
 	authorization policies based on who requested the access to the resource and on behalf of whom 
 	is the request.
@@ -87,11 +87,11 @@
         <name>Definitions</name>
 
       <artwork name="" type="" align="left" alt=""><![CDATA[
-Primary Subject - the main subject of the Token.
+Primary Subject - the main subject of the token.
 Secondary Subject - the subject that is acting on behalf of the primary subject.
 Resource Server (RS) - as defined in [RFC6749].
 Authorization Server (AS)  - as defined in [RFC6749].
-Issuer - is the AS that issues the Token.
+Issuer - is the AS that issues the token.
 Token - a mechanism to transfer claims between two parties across a security domain.
 
       ]]></artwork>
@@ -106,10 +106,10 @@ Token - a mechanism to transfer claims between two parties across a security dom
       <t>
         The following are few use cases that might benefit from such a concept, that fall into two different categories:
       </t>
-      <section anchor="one-Issuer" numbered="true" toc="default">
+      <section anchor="one-issuer" numbered="true" toc="default">
         <name>One Issuer Category</name>
         <t>
-   In the following cases, both JWTs are issued by the same Issuer.
+   In the following cases, both JWTs are issued by the same issuer.
         </t>
         <section anchor="prim-with-sec-authority" numbered="true" toc="default">
           <name>Primary Subject with Secondary Authority Subject</name>
@@ -145,10 +145,10 @@ Token - a mechanism to transfer claims between two parties across a security dom
           </t>
         </section>
       </section>
-      <section anchor="multiple-Issuers" numbered="true" toc="default">
+      <section anchor="multiple-issuers" numbered="true" toc="default">
         <name>Multiple Issuers Category</name>
         <t>
-   In the following cases, the JWTs are issued by different Issuers.
+   In the following cases, the JWTs are issued by different issuers.
         </t>
         <section anchor="stir" numbered="true" toc="default">
           <name>STIR</name>
@@ -179,7 +179,7 @@ Token - a mechanism to transfer claims between two parties across a security dom
   <t>
    NSM GRPS messages may pass through multiple intermediaries, each of
    which may transform the message.  Each intermediary is expected to
-   create its own JWT Token, and include a claim that contains the JWT it
+   create its own JWT token, and include a claim that contains the JWT it
    received with the message it has transformed.
   </t>
   <t>
@@ -195,28 +195,31 @@ Token - a mechanism to transfer claims between two parties across a security dom
      A JWT may have embedded claims from one or more separate Issuers. 
   </t>
   <t>
-  An ID Token may have identity claims from independent Issuers such as DOB and a professional accreditation.
+  An ID Token may have identity claims from independent issuers such as DOB and a professional accreditation.
   </t>
   </section>
     
   <section anchor="multiple-audiences" numbered="true" toc="default">
-  <name>Multiple Tokens for multiple resources</name>
+  <name>Multiple tokens for multiple resources</name>
   <t>
-     A JWT may embeds Tokens for different audiences and scopes. 
+     A JWT may embeds tokens for different audiences and scopes. 
   </t>
   <t>
   An Authorization Server issues a JWT Token that contains multiple Tokens. 
-  Each Token has a specialized set of attributes and values.
-  The Tokens can be used by the client to consume protected resources or to obtain access Tokens through 
-  a Token exchange mechanism, over different domains, releasing the minimum possible number 
-  of information, related on the main subject, necessary for the operation. 
+  Each Token MAY have a specialized set of claims and values 
+  referred to the first Subject.
+
+  The Tokens MAY be used by the Client to directly consume 
+  protected resources or obtain new Access Tokens, over different domains,
+  releasing the minimum possible number 
+  of information related on the main Subject and necessary for the operation. 
   </t>
   </section>
 
       </section>
     </section>
 
-<section anchor="one-Issuer-flow" numbered="true" toc="default">
+<section anchor="one-issuer-flow" numbered="true" toc="default">
     <name>One Issuer Flow</name>
     <t>
 	In this case, one Issuer is expected to issue either multiple Tokens or multiple claim 
@@ -235,26 +238,26 @@ Token - a mechanism to transfer claims between two parties across a security dom
     </section>
 
 
-    <section anchor="multiple-Issuers-flow" numbered="true" toc="default">
+    <section anchor="multiple-issuers-flow" numbered="true" toc="default">
       <name>Multiple Issuers Flow</name>
     <t>
-	In this case, one Issuer issues a Token that is then used by one client to interact with 
-	a second Issuer, provide the first Token to the second Issuer, and request a new 
-	Token that includes the first Token as an embedded Token in the new Token.
+	In this case, one issuer issues a token that is then used by one client to interact with 
+	a second issuer, provide the first token to the second issuer, and request a new 
+	token that includes the first token as an embedded token in the new token.
     </t>
     <t>
-	In a typical flow in this case, one client requests a Token from one Issuer with some permissions. 
-	The client then sends that Token to a second Issuer, which validates the Token, and needs to 
-	transform or add additional permissions to the first Token, but it cannot change the first Token. 
-	The authorization server then issues a new Token that either transforms the initial Token or adds 
-	more permissions to the new Token to extend the permissions in the initial Token, and embeds the 
-	initial Token into this new Token.
+	In a typical flow in this case, one client requests a token from one issuer with some permissions. 
+	The client then sends that token to a second issuer, which validates the token, and needs to 
+	transform or add additional permissions to the first token, but it cannot change the first token. 
+	The authorization server then issues a new token that either transforms the initial token or adds 
+	more permissions to the new token to extend the permissions in the initial token, and embeds the 
+	initial token into this new token.
     </t>
 
     </section>
 
 
-    <section anchor="one-Issuer-authz-request" numbered="true" toc="default">
+    <section anchor="one-issuer-authz-request" numbered="true" toc="default">
       <name>One Issuer Request and Response</name>
 
     <section anchor="authz-request" numbered="true" toc="default">
@@ -276,19 +279,19 @@ primary_subject - this indicates to the AS that the user sending this request is
       <name>Authorization Response</name>
       <t>
       If an authorization code is returned, then the response is the same as a standard authorization response. 
-      The authorization code will be used by the client to obtain the Tokens. Otherwise, Tokens will be returned 
+      The authorization code will be used by the client to obtain the tokens. Otherwise, tokens will be returned 
       in this response, per the existing standard flows.
       </t>
       <t>
-      Regardless of the way the Token was obtained, the claims in the Token will be associated with the primary_subject, 
-      with the claims associated with the secondary subject being embedded in the same Token.
+      Regardless of the way the token was obtained, the claims in the token will be associated with the primary_subject, 
+      with the claims associated with the secondary subject being embedded in the same token.
       </t>
     </section>
 
     <section anchor="authz-error-response" numbered="true" toc="default">
       <name>Error Response</name>
       <t>
-      If the secondary subject is not authorized to request a Token on behalf of the primary subject, 
+      If the secondary subject is not authorized to request a token on behalf of the primary subject, 
       then an error code will be returned to indicate that. In this case, the authorization server MUST 
       construct an error response, as specified in section 5.2 of RFC6749. The value of the error parameter 
       MUST be invalid_delegation error code.
@@ -302,23 +305,23 @@ primary_subject - this indicates to the AS that the user sending this request is
     </section>
 
 
-    <section anchor="mutiple-Issuers-Token-issuance" numbered="true" toc="default">
+    <section anchor="mutiple-issuers-token-issuance" numbered="true" toc="default">
       <name>Multiple Issuers Request and Response</name>
 
-    <section anchor="Token-issuance-request" numbered="true" toc="default">
+    <section anchor="token-issuance-request" numbered="true" toc="default">
       <name>Token Issuance Request</name>
       <t>
-        When a client receives a Token, and it needs to transform or/and enhance the permissions of the Token, 
-        the client will send a Token request to the AS, and include the received Token to be embedded in the newly 
-        issued Token that contains the transformed Token details or permissions.
+        When a client receives a token, and it needs to transform or/and enhance the permissions of the token, 
+        the client will send a token request to the AS, and include the received token to be embedded in the newly 
+        issued token that contains the transformed token details or permissions.
       </t>
       <t>
-        The Client requests a Token by sending an authorization request to the AS’s Token endpoint 
-        using the extension grant mechanism defined in Section 4.5 of [RFC6749].
+        The Client requests a token by sending an authorization request to the authorization server’s token endpoint 
+        using the extension grant mechanism defined in Section 5.4 of [RFC6749].
       </t>
 
       <t>
-      The client makes a Token request to the Token endpoint with an extension grant type using the HTTP POST method. 
+      The client makes a token request to the token endpoint with an extension grant type using the HTTP POST method. 
       </t>
 
       <t>
@@ -328,54 +331,54 @@ primary_subject - this indicates to the AS that the user sending this request is
 
       <artwork name="" type="" align="left" alt=""><![CDATA[
 grant_type
-REQUIRED. The value urn:ietf:params:oauth:grant-type:embedded-Token indicates that the 
-client is requesting that the authorization server embed a provided Token in the newly 
-issued Token.
+REQUIRED. The value urn:ietf:params:oauth:grant-type:embedded-token indicates that the 
+client is requesting that the authorization server embed a provided token in the newly 
+issued token.
 
-Token
-REQUIRED. This parameter carries the Token to be embedded into the newly issued Token.
+token
+REQUIRED. This parameter carries the token to be embedded into the newly issued token.
 
       ]]></artwork>
 
 
       <t>
-      The following is an example of this new Token request:
+      The following is an example of this new token request:
       </t>
 
       <artwork name="" type="" align="left" alt=""><![CDATA[
-POST /Token.oauth2 HTTP/1.1
+POST /token.oauth2 HTTP/1.1
 Host: as.example.com
 Content-Type: application/x-www-form-urlencoded
 
-grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-Token
-     &Token=<Token>
+grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-token
+     &token=<token>
 
 ]]></artwork>
     </section>
 
 
-      <section anchor="Token-issuance-response" numbered="true" toc="default">
+      <section anchor="token-issuance-response" numbered="true" toc="default">
       <name>Token Issuance Response</name>
     
       <t>
-      Before issuing the requested Token, the authorization server MUST ensure that the request is 
-      valid and that the embedded Token is coming from a trusted and approved entity
+      Before issuing the requested token, the authorization server MUST ensure that the request is 
+      valid and that the embedded token is coming from a trusted and approved entity
       </t>
 
       <t>
       In the case that the authorization server validated and approved the request, the authorization server 
-      responds to the above request with the standard response from the Token endpoint, as defined in section 
-      5 of [RFC6749], and includes the newly issued Token with the requested embedded Token.
+      responds to the above request with the standard response from the token endpoint, as defined in section 
+      5 of [RFC6749], and includes the newly issued token with the requested embedded token.
       </t>
       </section>
 
-      <section anchor="Token-issuance-error-response" numbered="true" toc="default">
+      <section anchor="token-issuance-error-response" numbered="true" toc="default">
       <name>Token Issuance Error</name>
     
       <t>
-      If the authorization fails to validate the embedded Token, then the authorization server MUST 
+      If the authorization fails to validate the embedded token, then the authorization server MUST 
       construct an error response, as specified in section 5.2 of RFC6749. The value of the error 
-      parameter MUST be invalid_embedded_Token error code.
+      parameter MUST be invalid_embedded_token error code.
       </t>
 
       <t>
@@ -405,7 +408,7 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-Token
         <dt>rel:</dt>
         <dd>
       Defines the relationship between the enclosed JWT and the enclosing JWT. It can 
-      take one of the values defined in section <xref target="Token-relationship" format="default"/> </dd>
+      take one of the values defined in section <xref target="token-relationship" format="default"/> </dd>
       </dl>
       <dl newline="true" spacing="normal" indent="3">
         <dt>jwt:</dt>
@@ -413,7 +416,7 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-Token
       Contains the enclosed JWT.</dd>
       </dl>
     </section>
-    <section anchor="Token-relationship" numbered="true" toc="default">
+    <section anchor="token-relationship" numbered="true" toc="default">
       <name>Token Relationship</name>
       <t>
    The following relathionship types are defined by this specification:
@@ -453,15 +456,15 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-Token
      Indicates that the subject in the enclosed JWT is the original JWT that resulted in the primary subject JWT</dd>
         <dt/>
         <dd>
-      This URN could be used in all the use cases described in <xref target="multiple-Issuers" format="default"/>.
+      This URN could be used in all the use cases described in <xref target="multiple-issuers" format="default"/>.
       </dd>
       </dl>
     </section>
     <section anchor="example" numbered="true" toc="default">
       <name>Example</name>
       <t>
-   The following example is for a multi-subject Token that represents a child/parent relashionship.
-   The enclosing JWT represents the primary user, the child in this case, and the enclosed Token in 
+   The following example is for a multi-subject token that represents a child/parent relashionship.
+   The enclosing JWT represents the primary user, the child in this case, and the enclosed token in 
    the "rsub" claim represents the secondary user, the parent in this case.
       </t>
       <artwork name="" type="" align="left" alt=""><![CDATA[
@@ -471,15 +474,11 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-Token
 }
 {
    "sub": "1234567890",
-   "name": "John Doe",
+   "name": "Alice Doe",
    "iat": 1516239022,
    "rsub": {
-      “rel” :  "urn:ietf:params:oauth:subject-type:authority"
-      “jwt” : {
-         "sub": "9876543210",
-         "name": "Alice Doe",
-         "iat": 1516239022,
-      }
+      "rel" : "urn:ietf:params:oauth:subject-type:authority"
+      "jwt" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
    }
 }
 ]]></artwork>
@@ -495,8 +494,8 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-Token
    Care must be taken to ensure that when a secondary subject is added to an account that an adequate approval process is in place.
       </t>
       <t>
-   In the multiple Issuers use cases, the entity handling the incoming authorization request that contains a JWT MUST validate 
-   the Token and ensure that it is coming from a trusted entity, before attempting to embed that JWT into a new multi-subject JWT issued 
+   In the multiple issuers use cases, the entity handling the incoming authorization request that contains a JWT MUST validate 
+   the token and ensure that it is coming from a trusted entity, before attempting to embed that JWT into a new multi-subject JWT issued 
    by the AS.
       </t>
     </section>
@@ -565,7 +564,7 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-Token
             </author>
             <date year="2018" month="February"/>
             <abstract>
-              <t>This document defines a method for creating and validating a Token that cryptographically verifies an originating identity or, more generally, a URI or telephone number representing the originator of personal communications.  The Personal Assertion Token, PASSporT, is cryptographically signed to protect the integrity of the identity of the originator and to verify the assertion of the identity information at the destination.  The cryptographic signature is defined with the intention that it can confidently verify the originating persona even when the signature is sent to the destination party over an insecure channel.  PASSporT is particularly useful for many personal-communications applications over IP networks and other multi-hop interconnection scenarios where the originating and destination parties may not have a direct trusted relationship.</t>
+              <t>This document defines a method for creating and validating a token that cryptographically verifies an originating identity or, more generally, a URI or telephone number representing the originator of personal communications.  The Personal Assertion Token, PASSporT, is cryptographically signed to protect the integrity of the identity of the originator and to verify the assertion of the identity information at the destination.  The cryptographic signature is defined with the intention that it can confidently verify the originating persona even when the signature is sent to the destination party over an insecure channel.  PASSporT is particularly useful for many personal-communications applications over IP networks and other multi-hop interconnection scenarios where the originating and destination parties may not have a direct trusted relationship.</t>
             </abstract>
           </front>
           <seriesInfo name="RFC" value="8225"/>
