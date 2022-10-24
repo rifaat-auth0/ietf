@@ -248,9 +248,9 @@ Token - a mechanism to transfer claims between two parties across a security dom
     <t>
 	In a typical flow in this case, one client requests a Token from one Issuer with some permissions. 
 	The client then sends that Token to a second Issuer, which validates the Token, and needs to 
-	transform or add additional permissions to the first Token, but it cannot change the first Token. 
+	transform or add additional properties to the first Token, but it cannot change the first Token. 
 	The Authorization Server then issues a new Token that either transforms the initial Token or adds 
-	more permissions to the new Token to extend the permissions in the initial Token, and embeds the 
+	more properties to the new Token to extend the permissions in the initial Token, and embeds the 
 	initial Token into this new Token.
     </t>
 
