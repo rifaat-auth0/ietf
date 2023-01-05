@@ -10,32 +10,31 @@
 <meta content="Giuseppe De Marco" name="author">
 <meta content="
        
-        This specification defines a mechanism for embedding tokens or claims into a JWT token. 
- The embedded tokens or claims could be either from one source or multiple sources, associated 
- with either one subject or multiple related subjects.
+        This specification defines a mechanism for embedding tokens into a JWT token. 
+        The JWT token and the embedded tokens are issued by different issuers.
        
     " name="description">
-<meta content="xml2rfc 3.15.1" name="generator">
-<meta content="draft-yusef-oauth-nested-jwt-06" name="ietf.draft">
+<meta content="xml2rfc 3.15.3" name="generator">
+<meta content="draft-yusef-oauth-nested-jwt-07" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.15.1
-    Python 3.8.14
+  xml2rfc 3.15.3
+    Python 3.8.15
     appdirs 1.4.4
     ConfigArgParse 1.5.3
     google-i18n-address 2.5.2
     html5lib 1.1
     intervaltree 3.1.0
     Jinja2 3.1.2
-    kitchen 1.2.6
-    lxml 4.9.1
+    lxml 4.9.2
     MarkupSafe 2.1.1
     pycountry 22.3.5
     PyYAML 6.0
     requests 2.28.1
     setuptools 56.0.0
     six 1.16.0
+    wcwidth 0.2.5
 -->
-<link href="multi-subject-jwt/draft-yusef-oauth-nested-jwt-06.xml" rel="alternate" type="application/rfc+xml">
+<link href="multi-subject-jwt/draft-yusef-oauth-nested-jwt-07.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
 <style type="text/css">/*
 
@@ -45,7 +44,7 @@
   this can be consolidated so that style settings occur only in one place, but
   for now the contents of this file consists first of the initial CSS work as
   provided to the RFC Formatter (xml2rfc) work, followed by itemized and
-  commented changes found necssary during the development of the v3
+  commented changes found necessary during the development of the v3
   formatters.
 
 */
@@ -54,6 +53,12 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans'); /* Sans-serif */
 @import url('https://fonts.googleapis.com/css?family=Noto+Serif'); /* Serif (print) */
 @import url('https://fonts.googleapis.com/css?family=Roboto+Mono'); /* Monospace */
+
+:root {
+  --font-sans: 'Noto Sans', Arial, Helvetica, sans-serif;
+  --font-serif: 'Noto Serif', 'Times', 'Times New Roman', serif;
+  --font-mono: 'Roboto Mono', Courier, 'Courier New', monospace;
+}
 
 @viewport {
   zoom: 1.0;
@@ -72,7 +77,7 @@ body {
   color: #222;
   background-color: #fff;
   font-size: 14px;
-  font-family: 'Noto Sans', Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.6;
   scroll-behavior: smooth;
 }
@@ -160,6 +165,15 @@ div {
 }
 svg {
   display: block;
+}
+svg[font-family~="serif" i], svg [font-family~="serif" i] {
+  font-family: var(--font-serif);
+}
+svg[font-family~="sans-serif" i], svg [font-family~="sans-serif" i] {
+  font-family: var(--font-sans);
+}
+svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
+  font-family: var(--font-mono);
 }
 .alignCenter.art-text {
   background-color: #f9f9f9;
@@ -256,7 +270,7 @@ a.selfRef:hover {
 /* Figures */
 tt, code, pre {
   background-color: #f9f9f9;
-  font-family: 'Roboto Mono', monospace;
+  font-family: var(--font-mono);
 }
 pre {
   border: 1px solid #eee;
@@ -493,7 +507,7 @@ address.vcard .nameRole {
   margin-left: 0;
 }
 address.vcard .label {
-  font-family: "Noto Sans",Arial,Helvetica,sans-serif;
+  font-family: var(--font-sans);
   margin: 0.5em 0;
 }
 address.vcard .type {
@@ -656,7 +670,7 @@ hr.addr {
   figure {
     overflow: scroll;
   }
-  pre.breakable {
+  .breakable pre {
     break-inside: auto;
   }
   h1, h2, h3, h4, h5, h6 {
@@ -726,7 +740,7 @@ hr.addr {
   size: A4;
   margin-bottom: 45mm;
   padding-top: 20px;
-  /* The follwing is commented out here, but set appropriately by in code, as
+  /* The following is commented out here, but set appropriately by in code, as
      the content depends on the document */
   /*
   @top-left {
@@ -831,7 +845,7 @@ tt, code, pre {
 }
 
 /* Fix the height/width aspect for ascii art*/
-pre.sourcecode,
+.sourcecode pre,
 .art-text pre {
   line-height: 1.12;
 }
@@ -867,7 +881,7 @@ table th.text-right {
   text-align: right;
 }
 
-/* Make the alternative author contact informatio look less like just another
+/* Make the alternative author contact information look less like just another
    author, and group it closer with the primary author contact information */
 .alternative-contact {
   margin: 0.5em 0 0.25em 0;
@@ -1064,7 +1078,7 @@ ol.type-A { list-style-type: upper-alpha; }
 ol.type-i { list-style-type: lower-roman; }
 ol.type-I { list-style-type: lower-roman; }
 /* Apply the print table and row borders in general, on request from the RPC,
-and increase the contrast between border and odd row background sligthtly */
+and increase the contrast between border and odd row background slightly */
 table {
   border: 1px solid #ddd;
 }
@@ -1124,7 +1138,7 @@ span.break, dd.break {
     break-before: auto;
   }
 }
-/* Text in compact lists should not get extra bottim margin space,
+/* Text in compact lists should not get extra bottom margin space,
    since that would makes the list not compact */
 ul.compact p, .ulCompact p,
 ol.compact p, .olCompact p {
@@ -1149,7 +1163,7 @@ p tt, p code, li tt, li code {
 pre {
    margin-top: 0.5px;
 }
-/* Tweak the comact list text */
+/* Tweak the compact list text */
 ul.compact, .ulCompact,
 ol.compact, .olCompact,
 dl.compact, .dlCompact {
@@ -1167,7 +1181,7 @@ dd > div.artwork:first-child,
 dd > aside:first-child,
 dd > figure:first-child,
 dd > ol:first-child,
-dd > div:first-child > pre.sourcecode,
+dd > div.sourcecode:first-child,
 dd > table:first-child,
 dd > ul:first-child {
   clear: left;
@@ -1181,7 +1195,7 @@ li > p {
   margin-bottom: 0.5em
 }
 /* Don't let p margin spill out from inside list items */
-li > p:last-of-type {
+li > p:last-of-type:only-child {
   margin-bottom: 0;
 }
 </style>
@@ -1194,11 +1208,11 @@ li > p:last-of-type {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">JWT Embedded Tokens</td>
-<td class="right">September 2022</td>
+<td class="right">December 2022</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Shekh-Yusef, et al.</td>
-<td class="center">Expires 26 March 2023</td>
+<td class="center">Expires 29 June 2023</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1208,15 +1222,15 @@ li > p:last-of-type {
 <dt class="label-workgroup">Workgroup:</dt>
 <dd class="workgroup">OAuth Working Group</dd>
 <dt class="label-internet-draft">Internet-Draft:</dt>
-<dd class="internet-draft">draft-yusef-oauth-nested-jwt-06</dd>
+<dd class="internet-draft">draft-yusef-oauth-nested-jwt-07</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-09-22" class="published">22 September 2022</time>
+<time datetime="2022-12-26" class="published">26 December 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2023-03-26">26 March 2023</time></dd>
+<dd class="expires"><time datetime="2023-06-29">29 June 2023</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1238,9 +1252,8 @@ li > p:last-of-type {
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">
-        This specification defines a mechanism for embedding tokens or claims into a JWT token. 
- The embedded tokens or claims could be either from one source or multiple sources, associated 
- with either one subject or multiple related subjects.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+        This specification defines a mechanism for embedding tokens into a JWT token. 
+        The JWT token and the embedded tokens are issued by different issuers.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
 <section id="section-boilerplate.1">
@@ -1261,7 +1274,7 @@ li > p:last-of-type {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 26 March 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 29 June 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1307,11 +1320,6 @@ li > p:last-of-type {
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
                 <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-terminology" class="internal xref">Terminology</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1.2.1">
-                    <p id="section-toc.1-1.1.2.1.2.1.1" class="keepWithNext"><a href="#section-1.1.1" class="auto internal xref">1.1.1</a>.  <a href="#name-definitions" class="internal xref">Definitions</a></p>
-</li>
-                </ul>
 </li>
             </ul>
 </li>
@@ -1319,128 +1327,105 @@ li > p:last-of-type {
             <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-use-cases" class="internal xref">Use Cases</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1">
-                <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-one-issuer-category" class="internal xref">One Issuer Category</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1.2.1">
-                    <p id="section-toc.1-1.2.2.1.2.1.1"><a href="#section-2.1.1" class="auto internal xref">2.1.1</a>.  <a href="#name-primary-subject-with-second" class="internal xref">Primary Subject with Secondary Authority Subject</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1.2.2">
-                    <p id="section-toc.1-1.2.2.1.2.2.1"><a href="#section-2.1.2" class="auto internal xref">2.1.2</a>.  <a href="#name-multiple-primary-subjects" class="internal xref">Multiple Primary Subjects</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1.2.3">
-                    <p id="section-toc.1-1.2.2.1.2.3.1"><a href="#section-2.1.3" class="auto internal xref">2.1.3</a>.  <a href="#name-delegation-of-authority" class="internal xref">Delegation of Authority</a></p>
-</li>
-                </ul>
+                <p id="section-toc.1-1.2.2.1.1" class="keepWithNext"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-stir" class="internal xref">STIR</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2">
-                <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-multiple-issuers-category" class="internal xref">Multiple Issuers Category</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2.2.1">
-                    <p id="section-toc.1-1.2.2.2.2.1.1"><a href="#section-2.2.1" class="auto internal xref">2.2.1</a>.  <a href="#name-stir" class="internal xref">STIR</a></p>
+                <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-network-service-mesh-nsm" class="internal xref">Network Service Mesh (NSM)</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2.2.2">
-                    <p id="section-toc.1-1.2.2.2.2.2.1"><a href="#section-2.2.2" class="auto internal xref">2.2.2</a>.  <a href="#name-network-service-mesh-nsm" class="internal xref">Network Service Mesh (NSM)</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.3">
+                <p id="section-toc.1-1.2.2.3.1"><a href="#section-2.3" class="auto internal xref">2.3</a>.  <a href="#name-multiple-issuers-for-same-s" class="internal xref">Multiple Issuers for same Subject</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2.2.3">
-                    <p id="section-toc.1-1.2.2.2.2.3.1"><a href="#section-2.2.3" class="auto internal xref">2.2.3</a>.  <a href="#name-multiple-issuers-for-same-s" class="internal xref">Multiple Issuers for same Subject</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2.2.4">
-                    <p id="section-toc.1-1.2.2.2.2.4.1"><a href="#section-2.2.4" class="auto internal xref">2.2.4</a>.  <a href="#name-multiple-tokens-for-multipl" class="internal xref">Multiple tokens for multiple resources</a></p>
-</li>
-                </ul>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.4">
+                <p id="section-toc.1-1.2.2.4.1"><a href="#section-2.4" class="auto internal xref">2.4</a>.  <a href="#name-multiple-tokens-for-multipl" class="internal xref">Multiple tokens for multiple resources</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
-            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-one-issuer-flow" class="internal xref">One Issuer Flow</a></p>
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-authorization-request-and-r" class="internal xref">Authorization Request and Response</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
+                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-authorization-request" class="internal xref">Authorization Request</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-authorization-successful-re" class="internal xref">Authorization Successful Response</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2.2.1">
+                    <p id="section-toc.1-1.3.2.2.2.1.1"><a href="#section-3.2.1" class="auto internal xref">3.2.1</a>.  <a href="#name-embedded-tokens-by-value" class="internal xref">Embedded Tokens By Value</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2.2.2">
+                    <p id="section-toc.1-1.3.2.2.2.2.1"><a href="#section-3.2.2" class="auto internal xref">3.2.2</a>.  <a href="#name-embedded-tokens-by-referenc" class="internal xref">Embedded Tokens By Reference</a></p>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
+                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-authorization-error-respons" class="internal xref">Authorization Error Response</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
-            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-multiple-issuers-flow" class="internal xref">Multiple Issuers Flow</a></p>
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-json-web-token-claims" class="internal xref">JSON Web Token Claims</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-tokens-claim" class="internal xref">"tokens" Claim</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1.2.1">
+                    <p id="section-toc.1-1.4.2.1.2.1.1"><a href="#section-4.1.1" class="auto internal xref">4.1.1</a>.  <a href="#name-type-claim" class="internal xref">"type" Claim</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1.2.2">
+                    <p id="section-toc.1-1.4.2.1.2.2.1"><a href="#section-4.1.2" class="auto internal xref">4.1.2</a>.  <a href="#name-token-claim" class="internal xref">"token" Claim</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1.2.3">
+                    <p id="section-toc.1-1.4.2.1.2.3.1"><a href="#section-4.1.3" class="auto internal xref">4.1.3</a>.  <a href="#name-digest-claim" class="internal xref">"digest" Claim</a></p>
+</li>
+                </ul>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
-            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-one-issuer-request-and-resp" class="internal xref">One Issuer Request and Response</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
-                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-authorization-request" class="internal xref">Authorization Request</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
-                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-authorization-response" class="internal xref">Authorization Response</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3">
-                <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="auto internal xref">5.3</a>.  <a href="#name-error-response" class="internal xref">Error Response</a></p>
-</li>
-            </ul>
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-multiple-issuers-request-an" class="internal xref">Multiple Issuers Request and Response</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
-                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-token-issuance-request" class="internal xref">Token Issuance Request</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
-                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-token-issuance-response" class="internal xref">Token Issuance Response</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.3">
-                <p id="section-toc.1-1.6.2.3.1"><a href="#section-6.3" class="auto internal xref">6.3</a>.  <a href="#name-token-issuance-error" class="internal xref">Token Issuance Error</a></p>
-</li>
-            </ul>
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-jwt-content" class="internal xref">JWT Content</a></p>
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-token-relationship" class="internal xref">Token Relationship</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-example" class="internal xref">Example</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
-            <p id="section-toc.1-1.13.1"><a href="#section-13" class="auto internal xref">13</a>. <a href="#name-references" class="internal xref">References</a></p>
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-references" class="internal xref">References</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1">
-                <p id="section-toc.1-1.13.2.1.1"><a href="#section-13.1" class="auto internal xref">13.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.2">
-                <p id="section-toc.1-1.13.2.2.1"><a href="#section-13.2" class="auto internal xref">13.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
 </li>
             </ul>
 </li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
-            <p id="section-toc.1-1.14.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
 </section>
 </div>
-<div id="sect-1">
+<div id="Intro">
 <section id="section-1">
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
 <p id="section-1-1">
- JWT is a mechanism that is used to transfer claims between two parties across security domains. 
- There are a number of use cases that need to embed tokens or claims into another JWT token 
- associated with one or multiple subjects.<a href="#section-1-1" class="pilcrow">¶</a></p>
+        JWT is a mechanism that is used to transfer claims between two parties across security domains. 
+        There are a number of use cases that need to embed tokens into another JWT token.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">
- This specification defines a mechanism for embedding tokens or claims into a JWT token. 
- The embedded tokens or claims could be either from one source or different sources, associated 
- with either one subject or multiple related subjects.<a href="#section-1-2" class="pilcrow">¶</a></p>
+        This specification defines a mechanism for embedding tokens into a JWT token. 
+        The JWT token and the embedded tokens are issued by different issuers.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">
- Such a mechanism allows for a proper auditing trail that allows the Resource Server to identify who 
- accessed what resource and on behalf of whom. In some cases, this allows the service consuming 
- such a token to present some of the information contained in the nested token or claims to the 
- end user in real-time. In addition, in some cases, this allows the Resource Server to apply 
- authorization policies based on who requested the access to the resource and on behalf of whom 
- is the request.<a href="#section-1-3" class="pilcrow">¶</a></p>
+        Such a mechanism allows for a proper auditing trail that allows the Resource Server to identify who 
+        accessed what resource and on behalf of whom. In some cases, this allows the service consuming 
+        such a token to present some of the information contained in the nested token or claims to the 
+        end user in real-time. In addition, in some cases, this allows the Resource Server to apply 
+        authorization policies based on who requested the access to the resource and on behalf of whom 
+        is the request.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <div id="sect-1.1">
 <section id="section-1.1">
         <h3 id="name-terminology">
@@ -1450,24 +1435,6 @@ li > p:last-of-type {
     The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
     "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
     document are to be interpreted as described in <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span>.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
-<div id="definitions">
-<section id="section-1.1.1">
-          <h4 id="name-definitions">
-<a href="#section-1.1.1" class="section-number selfRef">1.1.1. </a><a href="#name-definitions" class="section-name selfRef">Definitions</a>
-          </h4>
-<div class="alignLeft art-text artwork" id="section-1.1.1-1">
-<pre>
-Primary Subject - the main subject of the token.
-Secondary Subject - the subject that is acting on behalf of the primary subject.
-Resource Server (RS) - as defined in [RFC6749].
-Authorization Server (AS)  - as defined in [RFC6749].
-Issuer - is the AS that issues the token.
-Token - a mechanism to transfer claims between two parties across a security domain.
-
-</pre><a href="#section-1.1.1-1" class="pilcrow">¶</a>
-</div>
-</section>
-</div>
 </section>
 </div>
 </section>
@@ -1478,462 +1445,366 @@ Token - a mechanism to transfer claims between two parties across a security dom
 <a href="#section-2" class="section-number selfRef">2. </a><a href="#name-use-cases" class="section-name selfRef">Use Cases</a>
       </h2>
 <p id="section-2-1">
-        The following are few use cases that might benefit from such a concept, that fall into two different categories:<a href="#section-2-1" class="pilcrow">¶</a></p>
-<div id="one-issuer">
+        The following are few use cases that might benefit from such a concept:<a href="#section-2-1" class="pilcrow">¶</a></p>
+<div id="stir">
 <section id="section-2.1">
-        <h3 id="name-one-issuer-category">
-<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-one-issuer-category" class="section-name selfRef">One Issuer Category</a>
+        <h3 id="name-stir">
+<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-stir" class="section-name selfRef">STIR</a>
         </h3>
 <p id="section-2.1-1">
-   In the following cases, both JWTs are issued by the same issuer.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
-<div id="prim-with-sec-authority">
-<section id="section-2.1.1">
-          <h4 id="name-primary-subject-with-second">
-<a href="#section-2.1.1" class="section-number selfRef">2.1.1. </a><a href="#name-primary-subject-with-second" class="section-name selfRef">Primary Subject with Secondary Authority Subject</a>
-          </h4>
-<p id="section-2.1.1-1">
-   A primary subject with a related secondary subject that has authority over the primary subject, e.g. Child/Parent, Pet/Owner.<a href="#section-2.1.1-1" class="pilcrow">¶</a></p>
-<p id="section-2.1.1-2">
-   The secondary user (e.g., parent) logs in to an application (e.g., pharmacy application), gets redirected 
-   to the authorization server, authenticates, and asks for permission to access resources (e.g., medication) 
-   for the primary subject (e.g., child). 
-   The authorization server then issues a JWT with the primary subject in the enclosing JWT and the secondary 
-   subject in the nested JWT.<a href="#section-2.1.1-2" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="multiple-primary-subjects">
-<section id="section-2.1.2">
-          <h4 id="name-multiple-primary-subjects">
-<a href="#section-2.1.2" class="section-number selfRef">2.1.2. </a><a href="#name-multiple-primary-subjects" class="section-name selfRef">Multiple Primary Subjects</a>
-          </h4>
-<p id="section-2.1.2-1">
-   Two or more primary related subjects e.g. a married couple. The authorization server is setup to provide one of 
-   the subjects with permissions to access the other related subject resources.<a href="#section-2.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-2.1.2-2">  
-   One user (e.g., wife) logs in to a application (e.g., pharmacy application), gets redirected to the authorization server, 
-   authenticates, and asks for permission to access resources (e.g., medication) for the other primary subject (e.g., husband). 
-   The authorization server then issues a JWT with the primary subject in the enclosing JWT and the other 
-   primary subject in the nested JWT.<a href="#section-2.1.2-2" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="delegation-of-authority">
-<section id="section-2.1.3">
-          <h4 id="name-delegation-of-authority">
-<a href="#section-2.1.3" class="section-number selfRef">2.1.3. </a><a href="#name-delegation-of-authority" class="section-name selfRef">Delegation of Authority</a>
-          </h4>
-<p id="section-2.1.3-1">
-   A primary subject delegates authority over a resource to a secondary subject who acts on behalf of the primary subject, 
-   as defined in <span>[<a href="#RFC8693" class="cite xref">RFC8693</a>]</span>.<a href="#section-2.1.3-1" class="pilcrow">¶</a></p>
-</section>
-</div>
-</section>
-</div>
-<div id="multiple-issuers">
-<section id="section-2.2">
-        <h3 id="name-multiple-issuers-category">
-<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-multiple-issuers-category" class="section-name selfRef">Multiple Issuers Category</a>
-        </h3>
-<p id="section-2.2-1">
-   In the following cases, the JWTs are issued by different issuers.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
-<div id="stir">
-<section id="section-2.2.1">
-          <h4 id="name-stir">
-<a href="#section-2.2.1" class="section-number selfRef">2.2.1. </a><a href="#name-stir" class="section-name selfRef">STIR</a>
-          </h4>
-<p id="section-2.2.1-1">
    <span>[<a href="#RFC8225" class="cite xref">RFC8225</a>]</span> defines a PASSporT, which is a JWT, that is used to verify
-   the identity of a caller in an incoming call.<a href="#section-2.2.1-1" class="pilcrow">¶</a></p>
-<p id="section-2.2.1-2">
+   the identity of a caller in an incoming call.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.1-2">
    The PASSporT Extension for Diverted Calls draft <span>[<a href="#STIR" class="cite xref">STIR</a>]</span> uses a nested
    PASSporT to deliver the details of an incoming call that get
    redirected.  An authentication service acting for a retargeting
    entity generates new PASSporT and embeds the original PASSporT inside
    the new one.  When the new target receives the nested PASSporT it
    will be able to validate the enclosing PASSporT and use the details
-   of the enclosed PASSporT to identify the original target.<a href="#section-2.2.1-2" class="pilcrow">¶</a></p>
-<p id="section-2.2.1-3">
+   of the enclosed PASSporT to identify the original target.<a href="#section-2.1-2" class="pilcrow">¶</a></p>
+<p id="section-2.1-3">
    In this case, the original JWT is issued by the calling service, and the new enclosing 
-   JWT is issued by the retargeting service.<a href="#section-2.2.1-3" class="pilcrow">¶</a></p>
+   JWT is issued by the retargeting service.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="nsm">
-<section id="section-2.2.2">
-          <h4 id="name-network-service-mesh-nsm">
-<a href="#section-2.2.2" class="section-number selfRef">2.2.2. </a><a href="#name-network-service-mesh-nsm" class="section-name selfRef">Network Service Mesh (NSM)</a>
-          </h4>
-<p id="section-2.2.2-1">
+<section id="section-2.2">
+        <h3 id="name-network-service-mesh-nsm">
+<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-network-service-mesh-nsm" class="section-name selfRef">Network Service Mesh (NSM)</a>
+        </h3>
+<p id="section-2.2-1">
    Network Service Mesh [NSM] is a mechanism that maps the concept of a
-   service mesh in Kubernetes to L2/L3 payloads.<a href="#section-2.2.2-1" class="pilcrow">¶</a></p>
-<p id="section-2.2.2-2">
+   service mesh in Kubernetes to L2/L3 payloads.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.2-2">
    NSM GRPS messages may pass through multiple intermediaries, each of
    which may transform the message.  Each intermediary is expected to
    create its own JWT token, and include a claim that contains the JWT it
-   received with the message it has transformed.<a href="#section-2.2.2-2" class="pilcrow">¶</a></p>
-<p id="section-2.2.2-3">
+   received with the message it has transformed.<a href="#section-2.2-2" class="pilcrow">¶</a></p>
+<p id="section-2.2-3">
    In this case, the original JWT is issued by the entity sending the initial message, 
-   and the new enclosing JWT is issued by the intermediate entity.<a href="#section-2.2.2-3" class="pilcrow">¶</a></p>
+   and the new enclosing JWT is issued by the intermediate entity.<a href="#section-2.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="same-subject">
-<section id="section-2.2.3">
-          <h4 id="name-multiple-issuers-for-same-s">
-<a href="#section-2.2.3" class="section-number selfRef">2.2.3. </a><a href="#name-multiple-issuers-for-same-s" class="section-name selfRef">Multiple Issuers for same Subject</a>
-          </h4>
-<p id="section-2.2.3-1">
-     A JWT may have embedded claims from one or more separate Issuers.<a href="#section-2.2.3-1" class="pilcrow">¶</a></p>
-<p id="section-2.2.3-2">
-  An ID Token may have identity claims from independent issuers such as DOB and a professional accreditation.<a href="#section-2.2.3-2" class="pilcrow">¶</a></p>
+<section id="section-2.3">
+        <h3 id="name-multiple-issuers-for-same-s">
+<a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-multiple-issuers-for-same-s" class="section-name selfRef">Multiple Issuers for same Subject</a>
+        </h3>
+<p id="section-2.3-1">
+     A JWT may have embedded claims from one or more separate Issuers.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
+<p id="section-2.3-2">
+  An ID Token may have identity claims from independent issuers such as DOB and a professional accreditation.<a href="#section-2.3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="multiple-audiences">
-<section id="section-2.2.4">
-          <h4 id="name-multiple-tokens-for-multipl">
-<a href="#section-2.2.4" class="section-number selfRef">2.2.4. </a><a href="#name-multiple-tokens-for-multipl" class="section-name selfRef">Multiple tokens for multiple resources</a>
-          </h4>
-<p id="section-2.2.4-1">
-     A JWT may embeds tokens for different audiences and scopes.<a href="#section-2.2.4-1" class="pilcrow">¶</a></p>
-<p id="section-2.2.4-2">
+<section id="section-2.4">
+        <h3 id="name-multiple-tokens-for-multipl">
+<a href="#section-2.4" class="section-number selfRef">2.4. </a><a href="#name-multiple-tokens-for-multipl" class="section-name selfRef">Multiple tokens for multiple resources</a>
+        </h3>
+<p id="section-2.4-1">
+     A JWT may embeds tokens for different audiences and scopes.<a href="#section-2.4-1" class="pilcrow">¶</a></p>
+<p id="section-2.4-2">
   An Authorization Server issues a JWT Token that contains multiple tokens. 
   Each token has a specialized set of attributes and values.
   The tokens can be used by the client to consume protected resources or to obtain access tokens through 
   a token exchange mechanism, over different domains, releasing the minimum possible number 
-  of information, related on the main subject, necessary for the operation.<a href="#section-2.2.4-2" class="pilcrow">¶</a></p>
+  of information, related on the main subject, necessary for the operation.<a href="#section-2.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
-</section>
-</div>
-<div id="one-issuer-flow">
+<div id="embedded-token-request-response">
 <section id="section-3">
-      <h2 id="name-one-issuer-flow">
-<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-one-issuer-flow" class="section-name selfRef">One Issuer Flow</a>
+      <h2 id="name-authorization-request-and-r">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-authorization-request-and-r" class="section-name selfRef">Authorization Request and Response</a>
       </h2>
-<p id="section-3-1">
- In this case, one Issuer is expected to issue either multiple Tokens or multiple claim 
- payloads to a user based on either some configuration or some interaction with the involved subjects.<a href="#section-3-1" class="pilcrow">¶</a></p>
-<p id="section-3-2">
- In a typical flow in this case, the Secondary Subject initiates the interaction with the AS, 
- authenticates, and requests access to resources that belong to the Primary Subject. 
- In some cases, e.g., child/parent, husband/wife, the consent might be configured on 
- the AS, and no interactive action is required by the primary subject. In other cases, 
- e.g., employee/admin, after the Secondary Subject has authenticated and requested access 
- to the resources of the Secondary Subject, an action might be required by the Primary 
- Subject to approve the access request by the Secondary Subject. In either case, the 
- details of these interactions are out of scope of this document.<a href="#section-3-2" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="multiple-issuers-flow">
-<section id="section-4">
-      <h2 id="name-multiple-issuers-flow">
-<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-multiple-issuers-flow" class="section-name selfRef">Multiple Issuers Flow</a>
-      </h2>
-<p id="section-4-1">
- In this case, one issuer issues a token that is then used by one client to interact with 
- a second issuer, provide the first token to the second issuer, and request a new 
- token that includes the first token as an embedded token in the new token.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<p id="section-4-2">
- In a typical flow in this case, one client requests a token from one issuer with some permissions. 
- The client then sends that token to a second issuer, which validates the token, and needs to 
- transform or add additional permissions to the first token, but it cannot change the first token. 
- The authorization server then issues a new token that either transforms the initial token or adds 
- more permissions to the new token to extend the permissions in the initial token, and embeds the 
- initial token into this new token.<a href="#section-4-2" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="one-issuer-authz-request">
-<section id="section-5">
-      <h2 id="name-one-issuer-request-and-resp">
-<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-one-issuer-request-and-resp" class="section-name selfRef">One Issuer Request and Response</a>
-      </h2>
-<div id="authz-request">
-<section id="section-5.1">
+<p id="section-3-1">  
+    This section describes the mechanism to request an existing token or tokens to be embedded in a new token. The mechanism 
+    defines a new grant type embedded-tokens for this purpose.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<div id="embedded-token-request">
+<section id="section-3.1">
         <h3 id="name-authorization-request">
-<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-authorization-request" class="section-name selfRef">Authorization Request</a>
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-authorization-request" class="section-name selfRef">Authorization Request</a>
         </h3>
-<p id="section-5.1-1">
-        This document defines how an AS differentiates between an authorization request from a primary 
-        subject and a secondary subject, using the following parameters:<a href="#section-5.1-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.1-2">
-<pre>
-primary_subject - this indicates to the AS that the user sending this request is not
-                  the primary user of this authorization request, and instead the value
-                  of this parameter is the subject of this authorization request.
-</pre><a href="#section-5.1-2" class="pilcrow">¶</a>
-</div>
-</section>
-</div>
-<div id="authz-response">
-<section id="section-5.2">
-        <h3 id="name-authorization-response">
-<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-authorization-response" class="section-name selfRef">Authorization Response</a>
-        </h3>
-<p id="section-5.2-1">
-      If an authorization code is returned, then the response is the same as a standard authorization response. 
-      The authorization code will be used by the client to obtain the tokens. Otherwise, tokens will be returned 
-      in this response, per the existing standard flows.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.2-2">
-      Regardless of the way the token was obtained, the claims in the token will be associated with the primary_subject, 
-      with the claims associated with the secondary subject being embedded in the same token.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="authz-error-response">
-<section id="section-5.3">
-        <h3 id="name-error-response">
-<a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-error-response" class="section-name selfRef">Error Response</a>
-        </h3>
-<p id="section-5.3-1">
-      If the secondary subject is not authorized to request a token on behalf of the primary subject, 
-      then an error code will be returned to indicate that. In this case, the authorization server MUST 
-      construct an error response, as specified in section 5.2 of RFC6749. The value of the error parameter 
-      MUST be invalid_delegation error code.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
-<p id="section-5.3-2">
-      The authorization server MAY include additional information regarding the reasons for the error 
-      using the error_description as discussed in Section 5.2 of [RFC6749].<a href="#section-5.3-2" class="pilcrow">¶</a></p>
-</section>
-</div>
-</section>
-</div>
-<div id="mutiple-issuers-token-issuance">
-<section id="section-6">
-      <h2 id="name-multiple-issuers-request-an">
-<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-multiple-issuers-request-an" class="section-name selfRef">Multiple Issuers Request and Response</a>
-      </h2>
-<div id="token-issuance-request">
-<section id="section-6.1">
-        <h3 id="name-token-issuance-request">
-<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-token-issuance-request" class="section-name selfRef">Token Issuance Request</a>
-        </h3>
-<p id="section-6.1-1">
+<p id="section-3.1-1">
         When a client receives a token, and it needs to transform or/and enhance the permissions of the token, 
-        the client will send a token request to the AS, and include the received token to be embedded in the newly 
-        issued token that contains the transformed token details or permissions.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
-<p id="section-6.1-2">
-        The Client requests a token by sending an authorization request to the authorization server's token endpoint 
-        using the extension grant mechanism defined in Section 5.4 of [RFC6749].<a href="#section-6.1-2" class="pilcrow">¶</a></p>
-<p id="section-6.1-3">
-      The client makes a token request to the token endpoint with an extension grant type using the HTTP POST method.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
-<p id="section-6.1-4">
-      The following parameters are included in the HTTP request entity-body using the application/x-www-form-urlencoded 
-      format with a character encoding of UTF-8 as described in Appendix B of [RFC6749].<a href="#section-6.1-4" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6.1-5">
+        the client will send a token request to the AS, and include the received token or tokens to be embedded in the newly 
+        issued token that contains the transformed token details or permissions.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-2">
+        The Client requests a token by sending an authorization request to the authorization server's token endpoint and include
+        the following parameters in a JSON payload:<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlNewline" id="section-3.1-3">
+          <dt id="section-3.1-3.1">grant_type (REQUIRED)</dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-3.2">Carries the new grant type to indicate to the token endpoint that the provided token(s) to be embedded 
+      into the newly issued token. The parameter value MUST be urn:ietf:params:oauth:grant-type:embedded-tokens<a href="#section-3.1-3.2" class="pilcrow">¶</a>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-3.1-3.3">tokens (REQUIRED)</dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-3.4">An array of objects, where each object represents a token that contains the "type" claim and either the "token" claim, 
+      or the "digest" and "jti" claims, as defined in section 4 of this specification.<a href="#section-3.1-3.4" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<p id="section-3.1-4">
+      The request MAY include any of the following parameters, defined in Section 2.1 of RFC8693: resource, audience, scope, 
+      and requested_token_type.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.1-5">
+      The following is an example of this new token request:<a href="#section-3.1-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.1-6">
 <pre>
-grant_type
-REQUIRED. The value urn:ietf:params:oauth:grant-type:embedded-token indicates that the
-client is requesting that the authorization server embed a provided token in the newly
-issued token.
 
-token
-REQUIRED. This parameter carries the token to be embedded into the newly issued token.
+ POST /token
+ Host: as.example.com
+ Content-Type: application/json
 
-</pre><a href="#section-6.1-5" class="pilcrow">¶</a>
+ {
+    "grant_type": "urn:ietf:params:oauth:grant-type:embedded-tokens",
+    "requested_token_type": "urn:ietf:params:oauth:token-type:access_token"
+    "tokens": [
+      {
+        "type": "urn:ietf:params:oauth:token-type:access_token",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+                  eyJzdWIiOiIyMzQ1Njc4OTAxIiwibmFtZSI6IkFsZXggRG9lIiwia
+                  WF0IjoxNTE2MjM5MDIyLCJqdGkiOiJYRkVYYlNDMHhpTXUifQ.
+                  wyycbcY9i0U5YldltNhp4WbM-gF3Q1-jtnc-Wvzyxcg"
+      }
+    ]
+ }
+
+</pre><a href="#section-3.1-6" class="pilcrow">¶</a>
 </div>
-<p id="section-6.1-6">
-      The following is an example of this new token request:<a href="#section-6.1-6" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6.1-7">
+<p id="section-3.1-7">
+      The following is the decoded example embedded token in the above example:<a href="#section-3.1-7" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.1-8">
 <pre>
-POST /token.oauth2 HTTP/1.1
-Host: as.example.com
-Content-Type: application/x-www-form-urlencoded
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+.
+{
+  "sub": "2345678901",
+  "name": "Alex Doe",
+  "iat": 1516239022,
+  "jti": "XFEXbSC0xiMu"
+}
 
-grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-token
-     &amp;token=&lt;token&gt;
-
-</pre><a href="#section-6.1-7" class="pilcrow">¶</a>
+</pre><a href="#section-3.1-8" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
-<div id="token-issuance-response">
-<section id="section-6.2">
-        <h3 id="name-token-issuance-response">
-<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-token-issuance-response" class="section-name selfRef">Token Issuance Response</a>
+<div id="embedded-token-response">
+<section id="section-3.2">
+        <h3 id="name-authorization-successful-re">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-authorization-successful-re" class="section-name selfRef">Authorization Successful Response</a>
         </h3>
-<p id="section-6.2-1">
+<p id="section-3.2-1">
       Before issuing the requested token, the authorization server MUST ensure that the request is 
-      valid and that the embedded token is coming from a trusted and approved entity<a href="#section-6.2-1" class="pilcrow">¶</a></p>
-<p id="section-6.2-2">
+      valid and that the embedded token(s) provided in the subject_token is coming from a trusted and approved entity<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-2">
       In the case that the authorization server validated and approved the request, the authorization server 
-      responds to the above request with the standard response from the token endpoint, as defined in section 
-      5 of [RFC6749], and includes the newly issued token with the requested embedded token.<a href="#section-6.2-2" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="token-issuance-error-response">
-<section id="section-6.3">
-        <h3 id="name-token-issuance-error">
-<a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-token-issuance-error" class="section-name selfRef">Token Issuance Error</a>
-        </h3>
-<p id="section-6.3-1">
-      If the authorization fails to validate the embedded token, then the authorization server MUST 
-      construct an error response, as specified in section 5.2 of RFC6749. The value of the error 
-      parameter MUST be invalid_embedded_token error code.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
-<p id="section-6.3-2">
-      The authorization server MAY include additional information regarding the reasons for the error using 
-      the error_description as discussed in Section 5.2 of [RFC6749].<a href="#section-6.3-2" class="pilcrow">¶</a></p>
-</section>
-</div>
-</section>
-</div>
-<div id="jwt-content">
-<section id="section-7">
-      <h2 id="name-jwt-content">
-<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-jwt-content" class="section-name selfRef">JWT Content</a>
-      </h2>
-<p id="section-7-1">
-   The payload of the enclosing JWT is JSON object that contains the
-   Claims Set of the primary subject, and one new claim that is used to 
-   hold the enclosed JWT and its relation to the primary subject.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2">
-   This document defines a new claim, "rsub" (Related Subject) Claim, that is used 
-   to contain the enclosed JWT and its relation to the primary subject. The "rsub" 
-   contains two claims:<a href="#section-7-2" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-7-3">
-        <dt id="section-7-3.1">rel:</dt>
-        <dd style="margin-left: 1.5em" id="section-7-3.2">
-      Defines the relationship between the enclosed JWT and the enclosing JWT. It can 
-      take one of the values defined in section <a href="#token-relationship" class="auto internal xref">Section 8</a><a href="#section-7-3.2" class="pilcrow">¶</a>
-</dd>
-      <dd class="break"></dd>
-</dl>
-<span class="break"></span><dl class="dlNewline" id="section-7-4">
-        <dt id="section-7-4.1">jwt:</dt>
-        <dd style="margin-left: 1.5em" id="section-7-4.2">
-      Contains the enclosed JWT.<a href="#section-7-4.2" class="pilcrow">¶</a>
-</dd>
-      <dd class="break"></dd>
-</dl>
-</section>
-</div>
-<div id="token-relationship">
-<section id="section-8">
-      <h2 id="name-token-relationship">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-token-relationship" class="section-name selfRef">Token Relationship</a>
-      </h2>
-<p id="section-8-1">
-   The following relathionship types are defined by this specification:<a href="#section-8-1" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-8-2">
-        <dt id="section-8-2.1">urn:ietf:params:oauth:subject-type:authority</dt>
-        <dd style="margin-left: 1.5em" id="section-8-2.2">
-     Indicates that the subject in the enclosed JWT has authority over the subject in the enclosing JWT.<a href="#section-8-2.2" class="pilcrow">¶</a>
-</dd>
-        <dd class="break"></dd>
-<dt id="section-8-2.3"></dt>
-        <dd style="margin-left: 1.5em" id="section-8-2.4">
-     This URN could be used in the child/parent use case described in <a href="#prim-with-sec-authority" class="auto internal xref">Section 2.1.1</a>.<a href="#section-8-2.4" class="pilcrow">¶</a>
-</dd>
-      <dd class="break"></dd>
-</dl>
-<span class="break"></span><dl class="dlNewline" id="section-8-3">
-        <dt id="section-8-3.1">urn:ietf:params:oauth:subject-type:primary</dt>
-        <dd style="margin-left: 1.5em" id="section-8-3.2">
-      Indicates that the subject in the enclosed JWT is related primary subject<a href="#section-8-3.2" class="pilcrow">¶</a>
-</dd>
-        <dd class="break"></dd>
-<dt id="section-8-3.3"></dt>
-        <dd style="margin-left: 1.5em" id="section-8-3.4">
-      This URN could be used in the married couple use case described in <a href="#multiple-primary-subjects" class="auto internal xref">Section 2.1.2</a>.<a href="#section-8-3.4" class="pilcrow">¶</a>
-</dd>
-      <dd class="break"></dd>
-</dl>
-<span class="break"></span><dl class="dlNewline" id="section-8-4">
-        <dt id="section-8-4.1">urn:ietf:params:oauth:subject-type:actor</dt>
-        <dd style="margin-left: 1.5em" id="section-8-4.2">
-     Indicates that the subject in the enclosed JWT is acting on behalf of the primary subject<a href="#section-8-4.2" class="pilcrow">¶</a>
-</dd>
-        <dd class="break"></dd>
-<dt id="section-8-4.3"></dt>
-        <dd style="margin-left: 1.5em" id="section-8-4.4">
-      This URN could be used in the delegation use case described in <a href="#delegation-of-authority" class="auto internal xref">Section 2.1.3</a>.<a href="#section-8-4.4" class="pilcrow">¶</a>
-</dd>
-      <dd class="break"></dd>
-</dl>
-<span class="break"></span><dl class="dlNewline" id="section-8-5">
-        <dt id="section-8-5.1">urn:ietf:params:oauth:subject-type:original</dt>
-        <dd style="margin-left: 1.5em" id="section-8-5.2">
-     Indicates that the subject in the enclosed JWT is the original JWT that resulted in the primary subject JWT<a href="#section-8-5.2" class="pilcrow">¶</a>
-</dd>
-        <dd class="break"></dd>
-<dt id="section-8-5.3"></dt>
-        <dd style="margin-left: 1.5em" id="section-8-5.4">
-      This URN could be used in all the use cases described in <a href="#multiple-issuers" class="auto internal xref">Section 2.2</a>.<a href="#section-8-5.4" class="pilcrow">¶</a>
-</dd>
-      <dd class="break"></dd>
-</dl>
-</section>
-</div>
-<div id="example">
-<section id="section-9">
-      <h2 id="name-example">
-<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-example" class="section-name selfRef">Example</a>
-      </h2>
-<p id="section-9-1">
-   The following example is for a multi-subject token that represents a child/parent relashionship.
-   The enclosing JWT represents the primary user, the child in this case, and the enclosed token in 
-   the "rsub" claim represents the secondary user, the parent in this case.<a href="#section-9-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-9-2">
+      responds to the above request with the standard token exchange response, as defined in section 
+      2.2.1 of [RFC8693].<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.2-3">
+      The type of token issued is as specified in the requested_token_type parameter, if provided. 
+      Otherwise, the type of token issued is at the discretion of the authorization server.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+<div id="embedded-token-by-value">
+<section id="section-3.2.1">
+          <h4 id="name-embedded-tokens-by-value">
+<a href="#section-3.2.1" class="section-number selfRef">3.2.1. </a><a href="#name-embedded-tokens-by-value" class="section-name selfRef">Embedded Tokens By Value</a>
+          </h4>
+<p id="section-3.2.1-1">
+      The authorization server will typically embed the provided tokens directly into the newly issued token, 
+      when there are no concerns around the size of the new token with the embedded tokens.<a href="#section-3.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.2.1-2">
+      The following is an example for a JWT token with an embedded token:<a href="#section-3.2.1-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2.1-3">
 <pre>
 {
   "alg": "HS256",
   "typ": "JWT",
 }
+.
 {
-   "sub": "1234567890",
-   "name": "John Doe",
-   "iat": 1516239022,
-   "rsub": {
-      “rel” :  "urn:ietf:params:oauth:subject-type:authority"
-      “jwt” : {
-         "sub": "9876543210",
-         "name": "Alice Doe",
-         "iat": 1516239022,
-      }
-   }
+  "sub": "1234567890",
+  "name": "John Doe",
+  "iat": 1516239022,
+  "tokens": [
+     {
+        "type": "urn:ietf:params:oauth:token-type:access_token",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+                  eyJzdWIiOiIyMzQ1Njc4OTAxIiwibmFtZSI6IkFsZXggRG9lIiwia
+                  WF0IjoxNTE2MjM5MDIyLCJqdGkiOiJYRkVYYlNDMHhpTXUifQ.
+                  wyycbcY9i0U5YldltNhp4WbM-gF3Q1-jtnc-Wvzyxcg"
+     }
+   ]
 }
-</pre><a href="#section-9-2" class="pilcrow">¶</a>
+
+</pre><a href="#section-3.2.1-3" class="pilcrow">¶</a>
 </div>
-<p id="section-9-3">
-   In this use case, both JWTs are issued by the same entity handling the authorization request.<a href="#section-9-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="embedded-token-by-reference">
+<section id="section-3.2.2">
+          <h4 id="name-embedded-tokens-by-referenc">
+<a href="#section-3.2.2" class="section-number selfRef">3.2.2. </a><a href="#name-embedded-tokens-by-referenc" class="section-name selfRef">Embedded Tokens By Reference</a>
+          </h4>
+<p id="section-3.2.2-1">
+      In some cases, embedding the tokens into the JWT directly might cause the token size to become too large. 
+      In this case, instead of embedding the tokens, the AS will embed a hash of the token(s) and its associated 'jti' claim(s). 
+      This allows the Client to send these tokens directly to the RS with the newly issued JWT, to allow the RS to validate that the 
+      tokens are indeed associated with this new issued JWT.<a href="#section-3.2.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2.2-2">
+      The following is an example for a JWT token with a reference to the token:<a href="#section-3.2.2-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2.2-3">
+<pre>
+{
+  "alg": "HS256",
+  "typ": "JWT",
+}
+.
+{
+  "sub": "1234567890",
+  "name": "John Doe",
+  "iat": 1516239022,
+  "tokens": [
+    {
+      "type": "urn:ietf:params:oauth:token-type:access_token:reference",
+      "digest":
+      {
+        "alg": "sha-256",
+        "hash": "68e439fd95964da902a8654d47c51d6bc0a7791ea9895173989b263374a9a125"
+      }
+      "jti": "XFEXbSC0xiMu"
+    }
+  ]
+}
+
+</pre><a href="#section-3.2.2-3" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="embedded-token-error-response">
+<section id="section-3.3">
+        <h3 id="name-authorization-error-respons">
+<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-authorization-error-respons" class="section-name selfRef">Authorization Error Response</a>
+        </h3>
+<p id="section-3.3-1">
+      If the authorization fails to validate the embedded token, then the authorization server MUST 
+      construct an error response, as specified in section 5.2 of RFC6749. The value of the error 
+      parameter MUST be invalid_embedded_token error code.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3-2">
+      The authorization server MAY include additional information regarding the reasons for the error using 
+      the error_description as discussed in Section 5.2 of [RFC6749].<a href="#section-3.3-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="jwt-claims">
+<section id="section-4">
+      <h2 id="name-json-web-token-claims">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-json-web-token-claims" class="section-name selfRef">JSON Web Token Claims</a>
+      </h2>
+<p id="section-4-1">
+    This section defines the new claims that will be used to represent the embedded tokens. 
+    It defines one top-level claim, "tokens" claim, and 3 sub claims under that, 'type', "token", 
+    and "digest" claims.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<div id="tokens-claim">
+<section id="section-4.1">
+        <h3 id="name-tokens-claim">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-tokens-claim" class="section-name selfRef">"tokens" Claim</a>
+        </h3>
+<p id="section-4.1-1">
+    The "tokens" claim is an array of objects, where each object represents a token, that contains 
+    the "type" claim and either the "token" claim, or the "digest" and "jti" claims.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<div id="type-claim">
+<section id="section-4.1.1">
+          <h4 id="name-type-claim">
+<a href="#section-4.1.1" class="section-number selfRef">4.1.1. </a><a href="#name-type-claim" class="section-name selfRef">"type" Claim</a>
+          </h4>
+<p id="section-4.1.1-1">
+    The "type" claim is used to indicate the type of embedded token, which takes one of the values defined in Section 3, RFC8693.<a href="#section-4.1.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="token-claim">
+<section id="section-4.1.2">
+          <h4 id="name-token-claim">
+<a href="#section-4.1.2" class="section-number selfRef">4.1.2. </a><a href="#name-token-claim" class="section-name selfRef">"token" Claim</a>
+          </h4>
+<p id="section-4.1.2-1">
+    The "token" claim is used to hold the details of the embedded token.<a href="#section-4.1.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="token-digest">
+<section id="section-4.1.3">
+          <h4 id="name-digest-claim">
+<a href="#section-4.1.3" class="section-number selfRef">4.1.3. </a><a href="#name-digest-claim" class="section-name selfRef">"digest" Claim</a>
+          </h4>
+<p id="section-4.1.3-1">
+    The "digest" claim is an object that is used to hold the hash of the token, to be used to reference the 
+    token instead of embedding it directly in the new JWT.&amp;#223;<a href="#section-4.1.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.1.3-2">The object contains the following two claims:<a href="#section-4.1.3-2" class="pilcrow">¶</a></p>
+<div id="token-alg">
+<section id="section-4.1.3.1">
+            <h5 id="name-alg-claim">
+<a href="#section-4.1.3.1" class="section-number selfRef">4.1.3.1. </a><a href="#name-alg-claim" class="section-name selfRef">"alg" Claim</a>
+            </h5>
+<p id="section-4.1.3.1-1">
+    Holds the algorithm used to hash the token. By default this is "sha-256".<a href="#section-4.1.3.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="token-hash">
+<section id="section-4.1.3.2">
+            <h5 id="name-hash-claim">
+<a href="#section-4.1.3.2" class="section-number selfRef">4.1.3.2. </a><a href="#name-hash-claim" class="section-name selfRef">"hash" Claim</a>
+            </h5>
+<p id="section-4.1.3.2-1">
+    Holds the hash value of the token using the algorithm defined in the "alg" claim.<a href="#section-4.1.3.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+</section>
+</div>
 </section>
 </div>
 <div id="sect-7">
-<section id="section-10">
+<section id="section-5">
       <h2 id="name-security-considerations">
-<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-10-1">
-   The existing security considerations apply to the use cases where the JWTs are issued by the same entity.
-   Allowing more than one subject to access the same account might open the door for potential abuse.
-   Care must be taken to ensure that when a secondary subject is added to an account that an adequate approval process is in place.<a href="#section-10-1" class="pilcrow">¶</a></p>
-<p id="section-10-2">
-   In the multiple issuers use cases, the entity handling the incoming authorization request that contains a JWT MUST validate 
-   the token and ensure that it is coming from a trusted entity, before attempting to embed that JWT into a new multi-subject JWT issued 
-   by the AS.<a href="#section-10-2" class="pilcrow">¶</a></p>
+<p id="section-5-1">
+      The entity handling the incoming authorization request MUST validate the token and 
+      ensure that it is coming from a trusted entity, before attempting to embed that into a newly issued JWT.<a href="#section-5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sect-8">
-<section id="section-11">
+<section id="section-6">
       <h2 id="name-iana-considerations">
-<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-11-1">
-   TODO<a href="#section-11-1" class="pilcrow">¶</a></p>
+<p id="section-6-1">
+   TODO<a href="#section-6-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sect-9">
-<section id="section-12">
+<section id="section-7">
       <h2 id="name-acknowledgments">
-<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
-<p id="section-12-1">
-   TODO<a href="#section-12-1" class="pilcrow">¶</a></p>
+<p id="section-7-1">
+   TODO<a href="#section-7-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<section id="section-13">
+<section id="section-8">
       <h2 id="name-references">
-<a href="#section-13" class="section-number selfRef">13. </a><a href="#name-references" class="section-name selfRef">References</a>
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
-<section id="section-13.1">
+<section id="section-8.1">
         <h3 id="name-normative-references">
-<a href="#section-13.1" class="section-number selfRef">13.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
 <dt id="RFC7519">[RFC7519]</dt>
@@ -1946,9 +1817,9 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Aembedded-token
 <dd class="break"></dd>
 </dl>
 </section>
-<section id="section-13.2">
+<section id="section-8.2">
         <h3 id="name-informative-references">
-<a href="#section-13.2" class="section-number selfRef">13.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
 <dt id="RFC8225">[RFC8225]</dt>
